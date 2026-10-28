@@ -1,0 +1,96 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+body { background: #0b0f19; color: #fff; min-height: 100vh; overflow-x: hidden; }
+.hidden { display: none !important; }
+
+.auth-overlay {
+    position: fixed; inset: 0; background: rgba(5, 8, 15, 0.9);
+    backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 2000;
+}
+.auth-card {
+    background: #131b2e; border: 1px solid #1e293b; padding: 30px; border-radius: 20px; width: 400px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+.auth-header h2 { color: #38bdf8; text-align: center; font-weight: 800; margin-bottom: 5px; }
+.auth-header p { color: #64748b; font-size: 0.85rem; text-align: center; margin-bottom: 20px; }
+.auth-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+.tab-btn { flex: 1; padding: 10px; background: #1e293b; border: none; color: #94a3b8; border-radius: 10px; font-weight: 600; cursor: pointer; }
+.tab-btn.active { background: #0284c7; color: #fff; }
+.input-group { margin-bottom: 15px; }
+.input-group label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; font-weight: 600; }
+.input-group input {
+    width: 100%; padding: 10px; background: #0b0f19; border: 1px solid #1e293b; border-radius: 10px; color: #fff; font-size: 0.9rem;
+}
+.submit-btn {
+    width: 100%; padding: 12px; background: #10b981; border: none; color: #fff; font-weight: 700; border-radius: 10px; cursor: pointer; font-size: 0.95rem;
+}
+.submit-btn:hover { background: #059669; }
+
+.top-navbar {
+    display: flex; justify-content: space-between; align-items: center; padding: 15px 40px;
+    background: #131b2e; border-bottom: 1px solid #1e293b;
+}
+.brand-logo { font-weight: 900; font-size: 1.2rem; color: #38bdf8; }
+.user-panel { display: flex; align-items: center; gap: 15px; }
+.balance-pill { background: #0b0f19; padding: 8px 18px; border-radius: 30px; border: 1px solid #10b981; color: #34d399; font-weight: 700; }
+.nav-action-btn { padding: 8px 18px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; }
+.lobbies-btn { background: #0284c7; color: #fff; }
+.logout-btn { background: #ef4444; color: #fff; }
+
+.section-title { text-align: center; margin: 40px 0 25px; font-weight: 800; color: #f8fafc; }
+.lobby-grid { display: flex; justify-content: center; gap: 30px; padding: 20px; }
+.game-box {
+    background: #131b2e; border: 1px solid #1e293b; border-radius: 20px; width: 320px; padding: 30px 20px; text-align: center;
+    cursor: pointer; transition: transform 0.2s;
+}
+.game-box:hover { transform: translateY(-6px); border-color: #38bdf8; }
+.box-icon { font-size: 4rem; margin-bottom: 15px; }
+.game-box h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; }
+.game-box p { font-size: 0.85rem; color: #94a3b8; line-height: 1.4; margin-bottom: 20px; }
+.play-now-btn { width: 100%; padding: 12px; background: #10b981; border: none; color: #fff; font-weight: 700; border-radius: 10px; cursor: pointer; }
+.avi-btn-color { background: #ef4444; }
+
+.swamp-arena {
+    display: flex; width: 1000px; height: 600px; margin: 30px auto; background: #131b2e; border-radius: 20px;
+    overflow: hidden; border: 1px solid #1e293b; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+.swamp-sidebar { width: 280px; background: #0b0f19; padding: 25px; display: flex; flex-direction: column; gap: 15px; border-right: 1px solid #1e293b; }
+.swamp-logo-plate {
+    font-family: 'Fredoka One', cursive; background: linear-gradient(135deg, #15803d, #166534);
+    color: #4ade80; padding: 12px; border-radius: 12px; text-align: center; font-size: 1.4rem; border: 2px solid #22c55e;
+}
+.swamp-logo-plate span { display: block; }
+.swamp-betting-card { background: #131b2e; padding: 12px; border-radius: 12px; border: 1px solid #1e293b; }
+.swamp-betting-card label { font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 6px; }
+.swamp-betting-card input { width: 100%; background: #0b0f19; border: 1px solid #334155; padding: 8px; border-radius: 8px; color: #4ade80; font-weight: 800; font-size: 1.1rem; text-align: center; }
+.swamp-control-btn { width: 100%; padding: 12px; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; font-size: 0.95rem; }
+.place-bet { background: #22c55e; color: #fff; }
+.take-win { background: #f59e0b; color: #000; }
+.take-win.disabled { opacity: 0.4; pointer-events: none; }
+.back-lobby-link { background: transparent; border: none; color: #64748b; font-weight: 600; cursor: pointer; margin-top: auto; text-align: left; }
+.swamp-board-area { flex: 1; background: #0284c7; position: relative; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 25px; }
+.swamp-rows-container { display: flex; flex-direction: column-reverse; gap: 15px; width: 100%; align-items: center; }
+.swamp-row-item { display: flex; align-items: center; gap: 15px; position: relative; }
+.swamp-mult-indicator { position: absolute; right: -85px; color: #fff; font-weight: 800; font-size: 0.95rem; text-shadow: 1px 1px 2px #000; }
+.leaf-node {
+    width: 60px; height: 60px; background: #22c55e; border-radius: 50%; border: 3px solid #15803d;
+    display: flex; justify-content: center; align-items: center; font-size: 1.5rem; cursor: pointer; box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    transition: transform 0.15s;
+}
+.leaf-node:hover { transform: scale(1.08); }
+.leaf-node.active-row-glow { box-shadow: 0 0 15px #facc15; border-color: #facc15; }
+.swamp-footer-frog { font-size: 2rem; margin-top: 10px; }
+
+.aviator-wrapper { max-width: 900px; margin: 30px auto; background: #131b2e; border-radius: 20px; padding: 20px; border: 1px solid #1e293b; }
+.avi-viewport {
+    position: relative; width: 100%; height: 340px; background: radial-gradient(circle at bottom left, #2b0b1a 0%, #05080f 75%);
+    border-radius: 14px; overflow: hidden; border: 1px solid #1e293b; display: flex; justify-content: center; align-items: center;
+}
+#aviatorCanvas { width: 100%; height: 100%; }
+.avi-multiplier-plate { position: absolute; font-size: 3.8rem; font-weight: 900; color: #fff; text-shadow: 0 0 25px rgba(239, 68, 68, 0.7); }
+.avi-flew-msg { position: absolute; font-size: 2rem; font-weight: 900; color: #ef4444; letter-spacing: 2px; }
+.avi-control-panels { display: flex; gap: 15px; margin-top: 15px; }
+.avi-panel-card { flex: 1; background: #0b0f19; border-radius: 14px; padding: 15px; border: 1px solid #1e293b; }
+.avi-action-main {
+    width: 100%; padding: 12px; background: #22c55e; border: none; border-radius: 10px; color: #fff; font-weight: 800; cursor: pointer; font-size: 0.95rem; margin-top: 10px;
+}
+.avi-back { margin-top: 15px; display: inline-block; }

